@@ -1,0 +1,10 @@
+export const DEFAULT_QUERY_LIMIT = 10;
+
+export const DEFAULT_QUERY_PAGE = 1;
+
+export const DEFAULT_QUERY_STATUS = 'ALL';
+
+export const TOTAL_BACKUP_CODES = 10;
+export const THRESHOLD_GENERATE_MORE_BACKUP_CODES = 3;
+
+export const FORGOT_PASSWORD_EMAIL_EXPIRED_AFTER = 10 * 60 * 1000; // 10 minutes

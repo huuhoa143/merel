@@ -1,0 +1,14 @@
+[
+  {
+    "indexed": false,
+    "internalType": "address",
+    "name": "fpMerchant",
+    "type": "address"
+  },
+  {
+    "indexed": false,
+    "internalType": "address",
+    "name": "merchantWalletReceiver",
+    "type": "address"
+  }
+]

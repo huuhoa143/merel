@@ -1,0 +1,1 @@
+export const DEFAULT_SESSION_EXPIRE_DAY = '3';

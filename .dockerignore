@@ -1,0 +1,13 @@
+.idea/
+Dockerfile
+.dockerignore
+.local
+.env.example
+.env.develop
+.github
+Makefile
+data/
+dist/
+node_modules/
+production.Dockerfile
+**/.env

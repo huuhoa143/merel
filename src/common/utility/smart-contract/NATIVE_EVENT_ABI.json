@@ -1,0 +1,26 @@
+[
+  {
+    "indexed": false,
+    "internalType": "address",
+    "name": "sender",
+    "type": "address"
+  },
+  {
+    "indexed": false,
+    "internalType": "string",
+    "name": "chargeCode",
+    "type": "string"
+  },
+  {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "netValue",
+    "type": "uint256"
+  },
+  {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "feeValue",
+    "type": "uint256"
+  }
+]
