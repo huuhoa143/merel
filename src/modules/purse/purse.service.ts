@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import Web3 from 'web3';
+import { Wallet } from 'ethers';
 import {
   BASE_FUND_VALUE,
   DEFAULT_CHILDREN,
@@ -9,8 +10,6 @@ import {
   MAX_GAS_PRICE,
   MIN_CHILD_BALANCE,
 } from '@/common/constants/defaults';
-import { mnemonicToSeed } from 'bip39';
-import { hdkey } from 'ethereumjs-wallet';
 import {
   getBIP44Path,
   numberToBN,
@@ -157,6 +156,7 @@ export class PurseService implements OnModuleInit {
     childrenToCreate = DEFAULT_CHILDREN,
     autofundChildren = false,
   ) {
+    console.log({ mnemonic });
     const purse = new Purses();
     purse.networkId = networkId;
     purse.mnemonic = encryptPrivateKey(mnemonic);
@@ -167,31 +167,28 @@ export class PurseService implements OnModuleInit {
       minChildBalance: MIN_CHILD_BALANCE.toFixed(),
       masterWalletThreshold: MASTER_WALLET_THRESHOLD.toFixed(),
     };
-    const seed = await mnemonicToSeed(mnemonic);
-    const masterKey = hdkey.fromMasterSeed(seed);
-    const masterWallet = masterKey.getWallet();
-    const masterAddress = masterWallet.getChecksumAddressString();
+    const masterWallet = Wallet.fromMnemonic(mnemonic);
+    const masterAddress = masterWallet.address;
     const accounts = {};
     const children = [];
     accounts[masterAddress] = new Account({
       txCount: 0,
       wallet: {
-        publicKey: masterWallet.getChecksumAddressString(),
-        privateKey: encryptPrivateKey(masterWallet.getPrivateKeyString()),
+        publicKey: masterAddress,
+        privateKey: encryptPrivateKey(masterWallet.privateKey),
       },
     });
     this.logger.warn(`Initialized master key for account ${masterAddress}`);
     for (let i = 0; i < childrenToCreate; i++) {
-      const childKey = masterKey.derivePath(getBIP44Path(i));
-      const childWallet = childKey.getWallet();
-      const address = childWallet.getChecksumAddressString();
+      const childWallet = Wallet.fromMnemonic(mnemonic, getBIP44Path(i));
+      const address = childWallet.address;
 
       children[i] = address;
       accounts[address] = new Account({
         txCount: 0,
         wallet: {
-          publicKey: childWallet.getChecksumAddressString(),
-          privateKey: encryptPrivateKey(childWallet.getPrivateKeyString()),
+          publicKey: address,
+          privateKey: encryptPrivateKey(childWallet.privateKey),
         },
       });
 
@@ -204,8 +201,8 @@ export class PurseService implements OnModuleInit {
     purse.ready = true;
     purse.accountLookupInProgress = false;
     purse.masterWallet = {
-      publicKey: masterWallet.getChecksumAddressString(),
-      privateKey: encryptPrivateKey(masterWallet.getPrivateKeyString()),
+      publicKey: masterWallet.address,
+      privateKey: encryptPrivateKey(masterWallet.privateKey),
     };
     purse.checkBalances = true;
 
@@ -237,20 +234,20 @@ export class PurseService implements OnModuleInit {
    * @returns {Promise<void>}
    */
   async createNewChild(purse: Purses, numberOfChildren = 1) {
-    const masterKey = hdkey.fromMasterSeed(decryptPrivateKey(purse.mnemonic));
+    const mnemonic = purse.mnemonic;
+    const currentChildLength = purse.children.length;
     let newAccount = {};
     let children = [];
-    for (let i = 0; i < numberOfChildren; i++) {
-      const childKey = masterKey.derivePath(getBIP44Path(i));
-      const childWallet = childKey.getWallet();
-      const address = childWallet.getChecksumAddressString();
+    for (let i = currentChildLength; i < numberOfChildren; i++) {
+      const childWallet = Wallet.fromMnemonic(mnemonic, getBIP44Path(i));
+      const address = childWallet.address;
 
       children[i] = address;
       newAccount[address] = new Account({
         txCount: 0,
         wallet: {
-          publicKey: childWallet.getChecksumAddressString(),
-          privateKey: encryptPrivateKey(childWallet.getPrivateKeyString()),
+          publicKey: address,
+          privateKey: encryptPrivateKey(childWallet.privateKey),
         },
       });
 

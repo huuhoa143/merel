@@ -13,7 +13,6 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { redisOptions } from '@/libs/redis/redis.options';
 
 const errorStackTracerFormat = winston.format((info) => {
   if (info instanceof Error) {
@@ -96,10 +95,6 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors({ credentials: true });
 
-  app.connectMicroservice(redisOptions);
-  await app.startAllMicroservices(() => {
-    console.log('All microservices are listening');
-  });
   // Use global filter
   app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(+process.env.PORT, function () {

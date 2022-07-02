@@ -10,9 +10,7 @@ services:
     depends_on:
       - mongo
     ports:
-      - "3003:3000"
-    networks:
-      - merel-network
+      - "3005:3000"
     volumes:
       - ./:/app
       - /app/node_modules
@@ -25,8 +23,6 @@ services:
     restart: always
     ports:
       - 27017:27017
-    networks:
-      - merel-network
     volumes:
       - ./data/db:/data/db
     environment:
@@ -43,15 +39,9 @@ services:
     restart: always
     depends_on:
       - mongo
-    networks:
-      - merel-network
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
-
-networks:
-  merel-network:
-    external: true

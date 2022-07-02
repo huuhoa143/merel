@@ -15,31 +15,12 @@ import { SettingsModule } from '@/modules/settings/settings.module';
 import { CronjobModule } from '@/modules/cronjobs/cronjobs.module';
 import { RelayerTxnModule } from '@/modules/relayer-txn/relayer-txn.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RedisModule } from 'nestjs-redis';
 
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [configuration],
-    }),
-    RedisModule.register({
-      url: process.env.REDIS_URL,
-      name: 'redis_client',
-      onClientReady(client) {
-        client.on('error', (err) => {
-          console.log(err);
-        });
-        client.on('ready', () => {
-          console.log('Redis is ready');
-        });
-        client.on('connect', () => {
-          console.log('Redis is connected');
-        });
-      },
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(),

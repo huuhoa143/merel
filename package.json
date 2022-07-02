@@ -47,6 +47,7 @@
     "crypto-js": "^4.1.1",
     "date-fns": "^2.28.0",
     "ethereumjs-wallet": "^1.0.2",
+    "ethers": "^5.6.9",
     "exchange-rates-api": "^1.1.0",
     "express-session": "^1.17.2",
     "grpc": "^1.24.11",

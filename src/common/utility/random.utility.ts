@@ -18,7 +18,7 @@ export function hexToString(hex) {
 }
 
 export function getBIP44Path(idx) {
-  return `m/44'/60'/${idx}'/0`;
+  return `m/44'/60'/0'/0/${idx}`;
 }
 
 export async function tick(wait = 1000) {
